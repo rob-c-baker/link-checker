@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "description": "A tool for scraping a URL recursively to find broken links",
   "main": "src/main.js",
+  "license": "LicenseRef-LICENSE",
+  "bin": {
+    "link-checker": "src/cli.js"
+  },
+  "bugs": {
+    "url": "https://gitlab.alanrogers.com/web-dev/link-checker/-/issues"
+  },
   "repository": {
     "url": "https://gitlab.alanrogers.com/web-dev/link-checker.git"
   },
