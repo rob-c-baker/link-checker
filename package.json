@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A tool for scraping a URL recursively to find broken links",
   "main": "src/main.js",
-  "license": "LicenseRef-LICENSE",
+  "private": true,
   "bin": {
     "link-checker": "src/cli.js"
   },
