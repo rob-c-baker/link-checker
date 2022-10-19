@@ -1,0 +1,11 @@
+{
+  "name": "link-checker",
+  "version": "1.0.0",
+  "description": "A tool for scraping a URL recursively to find broken links",
+  "main": "src/main.js",
+  "repository": {
+    "url": "https://gitlab.alanrogers.com/web-dev/link-checker.git"
+  },
+  "dependencies": {
+  }
+}
