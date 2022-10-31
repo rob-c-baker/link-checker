@@ -1,20 +1,24 @@
 import Queue, {Job} from "../queue/queue";
-import HttpResponse from "../models/http-response";
 import QueueProcessor from "../queue/queue-processor";
-import got from "got";
-import {Method} from "got";
 import chalk from 'chalk';
 import Csv from "../reporter/csv";
+import Url from "../models/url";
+import Config from "../config";
 
 export default class Manager
 {
+    static readonly config: Config = Config.instance();
     readonly queue_processor: QueueProcessor;
     readonly queue: Queue;
-    readonly csv: Csv;
-    static base_url: URL;
+    readonly csv: Csv = new Csv();
+    static base_url: Url;
 
-    constructor(base_url: string)
+    constructor(url: string)
     {
+        const base_url = Url.normaliseURL(new Url(url));
+        Manager.config.base_url = base_url.href;
+        Manager.base_url = base_url;
+
         this.queue = new Queue(this, (batch: Array<Job>, cb: Function) => {
             const promises = [];
             for (const job of batch) {
@@ -26,8 +30,11 @@ export default class Manager
         });
 
         this.queue_processor = new QueueProcessor(this.queue, this);
-        Manager.base_url = new URL(base_url);
-        this.csv = new Csv();
+    }
+
+    init()
+    {
+        this.loggingEvents();
     }
 
     loggingEvents()
@@ -50,26 +57,27 @@ export default class Manager
         });
     }
 
-    run()
+    async run()
     {
-        // add a job to start things off
+        await this.csv.writeHeader();
+
+        // add some jobs to start things off:
+
+        // the base URL
         this.queue.addJob({
             parent_url: undefined,
-            hit_url: new URL(Manager.base_url),
+            hit_url: Manager.base_url,
             method: 'get'
         });
-    }
 
-    /**
-     * @param url
-     * @param method
-     */
-    static async httpRequest(url: string, method: Method='head') : Promise<HttpResponse>
-    {
-        const response = await got(url, {
-            method: method,
-            throwHttpErrors: false
+        const sitemap_xml_url = Manager.base_url.clone();
+        sitemap_xml_url.pathname = '/sitemap.xml';
+
+        // sitemap.xml
+        this.queue.addJob({
+            parent_url: Manager.base_url,
+            hit_url: sitemap_xml_url,
+            method: 'get'
         });
-        return new HttpResponse(url, response.rawBody.toString(), response.statusCode);
     }
 }

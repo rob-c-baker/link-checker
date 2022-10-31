@@ -3,19 +3,20 @@
 import BetterQueue, {ProcessFunction, Ticket} from "better-queue";
 import {Method} from "got";
 import Manager from "../manager/manager";
+import Url from "../models/url";
 
 export interface Job
 {
-    parent_url: URL|undefined;
-    hit_url: URL;
+    parent_url: Url|undefined;
+    hit_url: Url;
     method: Method;
 }
 
 export interface Result
 {
-    hit_url: URL;
+    hit_url: Url;
     status: number;
-    source_url: URL|undefined;
+    source_url: Url|undefined;
 }
 
 export default class Queue
@@ -38,29 +39,30 @@ export default class Queue
         });
     }
 
-    isUrlQueued(url:string) : boolean
+    isUrlQueued(url: string) : boolean
     {
         return this.queued_urls.indexOf(url) > -1;
     }
 
-    markUrlQueued(url:string)
+    markUrlQueued(url: string)
     {
         this.queued_urls.push(url);
     }
 
     addJob(job: Job) : Ticket|undefined
     {
-        if (!this.isUrlQueued(job.hit_url.href)) {
-            this.markUrlQueued(job.hit_url.href);
-            return this.queue.push(job, (err, results) => {
-                if (err) {
-                    throw err;
-                }
-                // results is an array of `Result` objects
-                for (const result of results) {
-                    this.manager.csv.addRow(result.hit_url.href, result.status, result.source_url ? result.source_url.href : null);
-                }
-            });
+        if (this.isUrlQueued(job.hit_url.href)) {
+            return;
         }
+        this.markUrlQueued(job.hit_url.href);
+        return this.queue.push(job, (err, results) => {
+            if (err) {
+                throw err;
+            }
+            // results is an array of `Result` objects
+            for (const result of results) {
+                this.manager.csv.addRow(result.hit_url.href, result.status, result.source_url ? result.source_url.href : null);
+            }
+        });
     }
 }

@@ -1,6 +1,7 @@
 import Queue, {Job, Result} from "./queue";
 import Manager from "../manager/manager";
-import Parser from "../parser/parser";
+import Parser from "../services/parser";
+import Http from "../services/http";
 
 export default class QueueProcessor
 {
@@ -15,25 +16,19 @@ export default class QueueProcessor
 
     async processJob(job: Job) : Promise<Result>
     {
-        const response = await Manager.httpRequest(job.hit_url.href, job.method);
+        const response = await Http.request(job.hit_url.href, job.method);
 
         if (response.status === 200 && response.body.length > 0) {
+
             const parser = new Parser(response.body);
-            const links = parser.findLinks();
+            const links = parser.filterLinks(parser.findLinks());
+
             for (const link of links) {
-                let url: URL;
-                if (link.startsWith('http')) {
-                    url = new URL(link);
-                } else {
-                    url = new URL(link, Manager.base_url.href);
-                }
-                if (['http:', 'https:'].indexOf(url.protocol) > -1) {
-                    this.manager.queue.addJob({
-                        parent_url: job.hit_url,
-                        hit_url: url,
-                        method: url.hostname === Manager.base_url.hostname ? 'get' : 'head' // head method for external URLs
-                    });
-                }
+                this.manager.queue.addJob({
+                    parent_url: job.hit_url,
+                    hit_url: link,
+                    method: link.hostname === Manager.base_url.hostname ? 'get' : 'head' // head method for external URLs
+                });
             }
         }
 
