@@ -1,5 +1,5 @@
-import Queue, { Job, Result } from "./queue";
-import Manager from "../manager/manager";
+import Queue, { Job, Result } from "./queue.js";
+import Manager from "../manager/manager.js";
 export default class QueueProcessor {
     queue: Queue;
     manager: Manager;

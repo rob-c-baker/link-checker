@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,23 +7,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const queue_1 = __importDefault(require("../queue/queue"));
-const queue_processor_1 = __importDefault(require("../queue/queue-processor"));
-const chalk_1 = __importDefault(require("chalk"));
-const csv_1 = __importDefault(require("../reporter/csv"));
-const url_1 = __importDefault(require("../models/url"));
-const config_1 = __importDefault(require("../config"));
-class Manager {
+import Queue from "../queue/queue.js";
+import QueueProcessor from "../queue/queue-processor.js";
+import chalk from 'chalk';
+import Csv from "../reporter/csv.js";
+import Url from "../models/url.js";
+import Config from "../config.js";
+export default class Manager {
     constructor(url) {
-        this.csv = new csv_1.default();
-        const base_url = url_1.default.normaliseURL(new url_1.default(url));
+        this.csv = new Csv();
+        const base_url = Url.normaliseURL(new Url(url));
         Manager.config.base_url = base_url.href;
         Manager.base_url = base_url;
-        this.queue = new queue_1.default(this, (batch, cb) => {
+        this.queue = new Queue(this, (batch, cb) => {
             const promises = [];
             for (const job of batch) {
                 promises.push(this.queue_processor.processJob(job));
@@ -33,17 +28,17 @@ class Manager {
                 cb(null, results);
             });
         });
-        this.queue_processor = new queue_processor_1.default(this.queue, this);
+        this.queue_processor = new QueueProcessor(this.queue, this);
     }
     init() {
         this.loggingEvents();
     }
     loggingEvents() {
         this.queue.queue.on('task_finish', (taskId, result, stats) => {
-            console.log(chalk_1.default.green('[Done] ') + taskId);
+            console.log(chalk.green('[Done] ') + taskId);
         });
         this.queue.queue.on('task_failed', (taskId, err, stats) => {
-            console.log(chalk_1.default.red('[Error] ') + taskId + ' - ' + err);
+            console.log(chalk.red('[Error] ') + taskId + ' - ' + err);
         });
         // when there are no more tasks on the queue and when no more tasks are running.
         this.queue.queue.on('drain', () => {
@@ -71,6 +66,5 @@ class Manager {
         });
     }
 }
-exports.default = Manager;
-Manager.config = config_1.default.instance();
+Manager.config = Config.instance();
 //# sourceMappingURL=manager.js.map

@@ -1,4 +1,4 @@
-import Config from "../config";
+import Config from "../config.js";
 import {sanitizeUrl} from "@braintree/sanitize-url";
 
 export default class Url extends URL

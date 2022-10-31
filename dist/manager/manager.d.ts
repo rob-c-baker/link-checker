@@ -1,8 +1,8 @@
-import Queue from "../queue/queue";
-import QueueProcessor from "../queue/queue-processor";
-import Csv from "../reporter/csv";
-import Url from "../models/url";
-import Config from "../config";
+import Queue from "../queue/queue.js";
+import QueueProcessor from "../queue/queue-processor.js";
+import Csv from "../reporter/csv.js";
+import Url from "../models/url.js";
+import Config from "../config.js";
 export default class Manager {
     static readonly config: Config;
     readonly queue_processor: QueueProcessor;

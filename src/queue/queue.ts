@@ -2,8 +2,8 @@
 // https://www.npmjs.com/package/better-queue
 import BetterQueue, {ProcessFunction, Ticket} from "better-queue";
 import {Method} from "got";
-import Manager from "../manager/manager";
-import Url from "../models/url";
+import Manager from "../manager/manager.js";
+import Url from "../models/url.js";
 
 export interface Job
 {

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "es6",
     "outDir": "./dist",
     "strict": true,
     "strictNullChecks": true,
@@ -10,7 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
+    "moduleResolution": "Node"
   },
   "include": [
     "src/**/*"

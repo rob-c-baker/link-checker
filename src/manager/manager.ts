@@ -1,9 +1,9 @@
-import Queue, {Job} from "../queue/queue";
-import QueueProcessor from "../queue/queue-processor";
+import Queue, {Job} from "../queue/queue.js";
+import QueueProcessor from "../queue/queue-processor.js";
 import chalk from 'chalk';
-import Csv from "../reporter/csv";
-import Url from "../models/url";
-import Config from "../config";
+import Csv from "../reporter/csv.js";
+import Url from "../models/url.js";
+import Config from "../config.js";
 
 export default class Manager
 {

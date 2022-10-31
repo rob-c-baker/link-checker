@@ -1,7 +1,7 @@
-import Queue, {Job, Result} from "./queue";
-import Manager from "../manager/manager";
-import Parser from "../services/parser";
-import Http from "../services/http";
+import Queue, {Job, Result} from "./queue.js";
+import Manager from "../manager/manager.js";
+import Parser from "../services/parser.js";
+import Http from "../services/http.js";
 
 export default class QueueProcessor
 {

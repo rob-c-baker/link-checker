@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 let instance = null;
-class Config {
+export default class Config {
     constructor() {
         this.base_url = '';
         this.allowed_protocols = [
@@ -16,5 +14,4 @@ class Config {
         return instance;
     }
 }
-exports.default = Config;
 //# sourceMappingURL=config.js.map

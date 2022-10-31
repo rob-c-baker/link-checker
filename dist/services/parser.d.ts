@@ -1,5 +1,5 @@
 import { JSDOM } from "jsdom";
-import Url from "../models/url";
+import Url from "../models/url.js";
 export default class Parser {
     body: string;
     dom: JSDOM;

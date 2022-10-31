@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = __importDefault(require("../config"));
-const sanitize_url_1 = require("@braintree/sanitize-url");
-class Url extends URL {
+import Config from "../config.js";
+import { sanitizeUrl } from "@braintree/sanitize-url";
+export default class Url extends URL {
     /**
      *
      * @param url
@@ -25,7 +20,7 @@ class Url extends URL {
         if (url.startsWith('http')) {
             return new Url(url);
         }
-        return new Url(url, config_1.default.instance().base_url);
+        return new Url(url, Config.instance().base_url);
     }
     static normaliseURL(url) {
         if (url.hash) { // don't care about hashes
@@ -40,7 +35,7 @@ class Url extends URL {
         return url;
     }
     static sanitiseUrl(url) {
-        const new_url = (0, sanitize_url_1.sanitizeUrl)(url);
+        const new_url = sanitizeUrl(url);
         if (!new_url) {
             return null;
         }
@@ -50,5 +45,4 @@ class Url extends URL {
         return new_url;
     }
 }
-exports.default = Url;
 //# sourceMappingURL=url.js.map

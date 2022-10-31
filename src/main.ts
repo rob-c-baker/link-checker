@@ -1,11 +1,10 @@
-import Manager from "./manager/manager";
+import Manager from "./manager/manager.js";
 
-// to debug EventEmitter potential memory leak
-process.on('warning', e => console.warn(e.stack));
-
-(async () => {
-    const url = 'https://alanrogers.com';
-    const manager = new Manager(url);
-    manager.init();
-    await manager.run();
-})();
+export default function (start_url: string)
+{
+    (async () => {
+        const manager = new Manager(start_url);
+        manager.init();
+        await manager.run();
+    })();
+}

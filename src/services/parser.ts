@@ -1,6 +1,6 @@
 import {JSDOM} from "jsdom";
-import Config from "../config";
-import Url from "../models/url";
+import Config from "../config.js";
+import Url from "../models/url.js";
 
 export default class Parser
 {

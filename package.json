@@ -4,8 +4,9 @@
   "description": "A tool for scraping a URL recursively to find broken links",
   "main": "src/main.js",
   "private": true,
+  "type": "module",
   "bin": {
-    "link-checker": "src/cli.js"
+    "link-checker": "./cli.js"
   },
   "bugs": {
     "url": "https://gitlab.alanrogers.com/web-dev/link-checker/-/issues"

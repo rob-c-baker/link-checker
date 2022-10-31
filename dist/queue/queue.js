@@ -1,15 +1,10 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 // https://www.npmjs.com/package/better-queue
-const better_queue_1 = __importDefault(require("better-queue"));
-class Queue {
+import BetterQueue from "better-queue";
+export default class Queue {
     constructor(manager, batch_processor) {
         this.manager = manager;
         this.queued_urls = [];
-        this.queue = new better_queue_1.default({
+        this.queue = new BetterQueue({
             id: (task, cb) => {
                 cb(null, task.hit_url.href);
             },
@@ -40,5 +35,4 @@ class Queue {
         });
     }
 }
-exports.default = Queue;
 //# sourceMappingURL=queue.js.map

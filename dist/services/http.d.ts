@@ -1,5 +1,5 @@
 import { Method } from "got";
-import HttpResponse from "../models/http-response";
+import HttpResponse from "../models/http-response.js";
 export default class Http {
     /**
      * @param url
