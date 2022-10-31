@@ -9,7 +9,7 @@ export default class Parser {
     findLinks() {
         const links = [];
         // links in attributes
-        const nodes = this.dom.window.document.querySelectorAll('[href],[src],[data-src]');
+        const nodes = Array.from(this.dom.window.document.querySelectorAll('[href],[src],[data-src]'));
         for (const node of nodes) {
             let link = '';
             if (node.hasAttribute('href')) {
@@ -27,7 +27,7 @@ export default class Parser {
             }
         }
         // links in sitemaps
-        const locs = this.dom.window.document.querySelectorAll('loc');
+        const locs = Array.from(this.dom.window.document.querySelectorAll('loc'));
         for (const loc of locs) {
             const url = Url.instance(String(loc.textContent).trim());
             if (url) {
