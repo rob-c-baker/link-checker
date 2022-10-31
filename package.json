@@ -13,6 +13,10 @@
   "repository": {
     "url": "https://gitlab.alanrogers.com/web-dev/link-checker.git"
   },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.1",
     "@types/better-queue": "^3.8.3",
