@@ -39,7 +39,7 @@ export default class Manager
 
     loggingEvents()
     {
-        this.queue.queue.on('task_finish', (taskId: any, result: any, stats: any) => {
+        this.queue.queue.on('task_finish', (taskId: any, results: any, stats: any) => {
             console.log(
                 chalk.green('[Done] ') + taskId
             );
@@ -53,7 +53,7 @@ export default class Manager
 
         // when there are no more tasks on the queue and when no more tasks are running.
         this.queue.queue.on('drain', () => {
-            console.log('COMPLETE!');
+            console.log(chalk.green('COMPLETE!'));
         });
     }
 

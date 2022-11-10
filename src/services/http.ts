@@ -14,6 +14,6 @@ export default class Http
             method: method,
             throwHttpErrors: false
         });
-        return new HttpResponse(url, response.body, response.statusCode);
+        return new HttpResponse(url, response.body, response.statusCode, response.headers["content-type"]);
     }
 }

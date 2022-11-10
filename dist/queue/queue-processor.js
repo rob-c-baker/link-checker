@@ -18,9 +18,9 @@ export default class QueueProcessor {
     processJob(job) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield Http.request(job.hit_url.href, job.method);
-            if (response.status === 200 && response.body.length > 0) {
+            if (QueueProcessor.canParseResponse(response)) {
                 const parser = new Parser(response.body);
-                const links = parser.filterLinks(parser.findLinks());
+                const links = parser.filterLinks(parser.findLinks(response.is_xml));
                 for (const link of links) {
                     this.manager.queue.addJob({
                         parent_url: job.hit_url,
@@ -32,9 +32,20 @@ export default class QueueProcessor {
             return {
                 source_url: job.parent_url,
                 hit_url: job.hit_url,
-                status: response.status,
+                status: response.status
             };
         });
     }
+    static canParseResponse(response) {
+        return response.status === 200
+            && response.body.length > 0
+            && response.content_type
+            && QueueProcessor.parsable_content_types.includes(response.content_type);
+    }
 }
+QueueProcessor.parsable_content_types = [
+    'text/html',
+    'text/xml',
+    'application/xml'
+];
 //# sourceMappingURL=queue-processor.js.map
