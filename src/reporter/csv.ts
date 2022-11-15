@@ -1,19 +1,20 @@
 
 import fs from "fs";
 import path from "path";
+import Task from "../queue/task.js";
 
 export default class Csv
 {
-    file_stream: fs.WriteStream;
+    private file_stream: fs.WriteStream;
 
     constructor()
     {
         this.file_stream = fs.createWriteStream(path.normalize('./output/urls.csv'));
     }
 
-    async writeHeader()
+    async header()
     {
-        return this.writeRow([
+        return this.write([
             'URL',
             'Status Code',
             'Source URL',
@@ -21,17 +22,22 @@ export default class Csv
         ]);
     }
 
-    async addRow(url:string, status:number, source_url:string|null)
+    async add(task: Task) : Promise<Task>
     {
-        return this.writeRow([
-            url,
-            String(status),
-            source_url ?? '',
-            (new Date()).toLocaleString()
-        ]);
+        try {
+            await this.write([
+                task.hit_url.href,
+                String(task.status),
+                task.parent_url ? task.parent_url.href : '',
+                (new Date()).toLocaleString()
+            ]);
+        } catch (e) {
+            throw e;
+        }
+        return task;
     }
 
-    async writeRow(data: Array<string>)
+    async write(data: Array<string>)
     {
         const escaped_data = data.map((element, index) => {
             if (element.indexOf('"') > -1) {
@@ -50,7 +56,7 @@ export default class Csv
             this.file_stream.write(escaped_data.join(',') + "\n", 'utf-8', error => {
                 if (error) {
                     reject(error);
-                    return;
+                    return false;
                 }
                 resolve(true);
             });

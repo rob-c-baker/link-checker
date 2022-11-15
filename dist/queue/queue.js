@@ -1,28 +1,30 @@
-// https://www.npmjs.com/package/better-queue
-import BetterQueue from "better-queue";
+// https://www.npmjs.com/package/fastq
+import * as fastq from "fastq";
+import Manager from "../manager/manager.js";
+import QueueProcessor from "./queue-processor.js";
+import { Html } from "../validators/html.js";
 export default class Queue {
-    constructor(manager, batch_processor) {
-        this.manager = manager;
+    constructor(manager) {
         this.queued_urls = new Set();
-        this.queue = new BetterQueue({
-            id: (task, cb) => {
-                cb(null, task.hit_url.href);
-            },
-            cancelIfRunning: true,
-            process: batch_processor,
-            batchSize: 5,
-            concurrent: 1 // Number of workers that can be running at any given time
-        });
+        this._task_finished = (task) => { };
+        QueueProcessor.validators.push(new Html());
+        this.manager = manager;
+        this.queue_processor = new QueueProcessor(manager);
+        this.q = fastq.promise(this.queue_processor.processJob.bind(this.queue_processor), Manager.config.concurrency);
     }
-    addJob(job) {
-        return this.queue.push(job, (err, results) => {
-            if (err) {
-                throw err;
-            }
-            // results is an array of `Result` objects
-            for (const result of results) {
-                this.manager.csv.addRow(result.hit_url.href, result.status, result.source_url ? result.source_url.href : null);
-            }
+    set task_finished(value) {
+        this._task_finished = value;
+    }
+    add(task) {
+        if (this.queued_urls.has(task.id)) {
+            return Promise.resolve(task);
+        }
+        this.queued_urls.add(task.id);
+        return this.q.push(task).then(task => {
+            return this.manager.csv.add(task);
+        }).then(task => {
+            this._task_finished(task);
+            return task;
         });
     }
 }

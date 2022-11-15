@@ -3,11 +3,23 @@ let instance: Config|null = null;
 
 export default class Config
 {
-    base_url: string = '';
+    public base_url: string = '';
 
-    allowed_protocols: Array<string> = [
+    public concurrency: number = 5;
+
+    public allowed_protocols: Array<string> = [
         'http',
         'https'
+    ];
+
+    public dom_content_types: Array<string> = [
+        'text/html',
+        'text/xml',
+        'application/xml'
+    ];
+
+    public css_content_types: Array<string> = [
+        'text/css'
     ];
 
     static instance() : Config

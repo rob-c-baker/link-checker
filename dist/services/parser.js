@@ -1,44 +1,9 @@
-import { JSDOM } from "jsdom";
 import Config from "../config.js";
-import Url from "../models/url.js";
 export default class Parser {
-    constructor(body) {
+    constructor(body, base_url) {
         this.body = body;
-        this.dom = new JSDOM(this.body);
-    }
-    findLinks(is_xml) {
-        const links = [];
-        if (!is_xml) {
-            // links in attributes
-            const nodes = Array.from(this.dom.window.document.querySelectorAll('[href],[src],[data-src]'));
-            for (const node of nodes) {
-                let link = '';
-                if (node.hasAttribute('href')) {
-                    link = String(node.getAttribute('href'));
-                }
-                else if (node.hasAttribute('src')) {
-                    link = String(node.getAttribute('src'));
-                }
-                else if (node.hasAttribute('data-src')) {
-                    link = String(node.getAttribute('data-src'));
-                }
-                const url = Url.instance(link);
-                if (url) {
-                    links.push(Url.normaliseURL(url));
-                }
-            }
-        }
-        else {
-            // links in sitemaps / XML
-            const locs = Array.from(this.dom.window.document.querySelectorAll('loc'));
-            for (const loc of locs) {
-                const url = Url.instance(String(loc.textContent).trim());
-                if (url) {
-                    links.push(Url.normaliseURL(url));
-                }
-            }
-        }
-        return links;
+        this.base_url = base_url;
+        // @todo support site.manifest
     }
     filterLinks(links) {
         const config = Config.instance();
@@ -50,6 +15,9 @@ export default class Parser {
             }
         }
         return links;
+    }
+    getLinks() {
+        return this.filterLinks(this.findLinks());
     }
 }
 //# sourceMappingURL=parser.js.map

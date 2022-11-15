@@ -8,61 +8,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import Queue from "../queue/queue.js";
-import QueueProcessor from "../queue/queue-processor.js";
 import chalk from 'chalk';
 import Csv from "../reporter/csv.js";
 import Url from "../models/url.js";
 import Config from "../config.js";
+import Task from "../queue/task.js";
 export default class Manager {
     constructor(url) {
+        this.queue = new Queue(this);
         this.csv = new Csv();
         const base_url = Url.normaliseURL(new Url(url));
         Manager.config.base_url = base_url.href;
         Manager.base_url = base_url;
-        this.queue = new Queue(this, (batch, cb) => {
-            const promises = [];
-            for (const job of batch) {
-                promises.push(this.queue_processor.processJob(job));
-            }
-            Promise.all(promises).then(results => {
-                cb(null, results);
-            });
-        });
-        this.queue_processor = new QueueProcessor(this.queue, this);
     }
     init() {
         this.loggingEvents();
     }
     loggingEvents() {
-        this.queue.queue.on('task_finish', (taskId, results, stats) => {
-            console.log(chalk.green('[Done] ') + taskId);
+        this.queue.q.error((err, task) => {
+            if (err) {
+                console.log(chalk.red('[Error] ') + ` ${task.id} ${err}`);
+                throw err; // so
+            }
         });
-        this.queue.queue.on('task_failed', (taskId, err, stats) => {
-            console.log(chalk.red('[Error] ') + taskId + ' - ' + err);
-        });
-        // when there are no more tasks on the queue and when no more tasks are running.
-        this.queue.queue.on('drain', () => {
+        this.queue.q.drained().then(() => {
             console.log(chalk.green('COMPLETE!'));
         });
+        this.queue.task_finished = (task) => {
+            console.log(chalk.green('[Done]') + ` ${task.id} ${task.content_type}`);
+        };
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.csv.writeHeader();
-            // add some jobs to start things off:
-            // the base URL
-            this.queue.addJob({
-                parent_url: undefined,
-                hit_url: Manager.base_url,
-                method: 'get'
-            });
+            // sitemap.xml based off Manager.base_url
             const sitemap_xml_url = Manager.base_url.clone();
             sitemap_xml_url.pathname = '/sitemap.xml';
-            // sitemap.xml
-            this.queue.addJob({
-                parent_url: Manager.base_url,
-                hit_url: sitemap_xml_url,
-                method: 'get'
-            });
+            try {
+                yield this.csv.header();
+                return Promise.all([
+                    this.queue.add(new Task(Manager.base_url, 'get', undefined)),
+                    this.queue.add(new Task(sitemap_xml_url, 'get', Manager.base_url))
+                ]);
+            }
+            catch (err) {
+                process.exit(1);
+            }
+            process.exit(0);
         });
     }
 }

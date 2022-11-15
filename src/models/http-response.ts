@@ -1,11 +1,11 @@
 
 export default class HttpResponse
 {
-    request_url: string;
-    content_type: string;
-    is_xml: boolean;
-    status: number;
-    body: string;
+    public request_url: string;
+    public content_type: string;
+    public is_xml: boolean;
+    public status: number;
+    public body: string;
 
     constructor(request_url: string, body: string, status: number, content_type: string|undefined)
     {

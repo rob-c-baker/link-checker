@@ -12,7 +12,7 @@ export default function (start_url) {
     (() => __awaiter(this, void 0, void 0, function* () {
         const manager = new Manager(start_url);
         manager.init();
-        yield manager.run();
+        return manager.run();
     }))();
 }
 //# sourceMappingURL=main.js.map

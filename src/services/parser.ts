@@ -1,52 +1,19 @@
-import {JSDOM} from "jsdom";
-import Config from "../config.js";
 import Url from "../models/url.js";
+import Config from "../config.js";
 
-export default class Parser
+export default abstract class Parser
 {
-    body: string;
-    dom: JSDOM;
+    protected body: string;
+    protected base_url: Url;
 
-    constructor(body: string)
+    constructor(body: string, base_url: Url)
     {
         this.body = body;
-        this.dom = new JSDOM(this.body);
+        this.base_url = base_url;
+        // @todo support site.manifest
     }
 
-    findLinks(is_xml: boolean) : Array<Url>
-    {
-        const links = [];
-
-        if (!is_xml) {
-            // links in attributes
-            const nodes = Array.from(this.dom.window.document.querySelectorAll('[href],[src],[data-src]'));
-            for (const node of nodes) {
-                let link = '';
-                if (node.hasAttribute('href')) {
-                    link = String(node.getAttribute('href'));
-                } else if (node.hasAttribute('src')) {
-                    link = String(node.getAttribute('src'));
-                } else if (node.hasAttribute('data-src')) {
-                    link = String(node.getAttribute('data-src'));
-                }
-                const url = Url.instance(link);
-                if (url) {
-                    links.push(Url.normaliseURL(url));
-                }
-            }
-        } else {
-            // links in sitemaps / XML
-            const locs = Array.from(this.dom.window.document.querySelectorAll('loc'));
-            for (const loc of locs) {
-                const url = Url.instance(String(loc.textContent).trim());
-                if (url) {
-                    links.push(Url.normaliseURL(url));
-                }
-            }
-        }
-
-        return links;
-    }
+    abstract findLinks() : Array<Url>;
 
     filterLinks(links: Array<Url>) : Array<Url>
     {
@@ -59,5 +26,10 @@ export default class Parser
             }
         }
         return links;
+    }
+
+    getLinks() : Array<Url>
+    {
+        return this.filterLinks(this.findLinks());
     }
 }

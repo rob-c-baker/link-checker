@@ -13,9 +13,9 @@ export default class Csv {
     constructor() {
         this.file_stream = fs.createWriteStream(path.normalize('./output/urls.csv'));
     }
-    writeHeader() {
+    header() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.writeRow([
+            return this.write([
                 'URL',
                 'Status Code',
                 'Source URL',
@@ -23,17 +23,23 @@ export default class Csv {
             ]);
         });
     }
-    addRow(url, status, source_url) {
+    add(task) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.writeRow([
-                url,
-                String(status),
-                source_url !== null && source_url !== void 0 ? source_url : '',
-                (new Date()).toLocaleString()
-            ]);
+            try {
+                yield this.write([
+                    task.hit_url.href,
+                    String(task.status),
+                    task.parent_url ? task.parent_url.href : '',
+                    (new Date()).toLocaleString()
+                ]);
+            }
+            catch (e) {
+                throw e;
+            }
+            return task;
         });
     }
-    writeRow(data) {
+    write(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const escaped_data = data.map((element, index) => {
                 if (element.indexOf('"') > -1) {
@@ -52,7 +58,7 @@ export default class Csv {
                 this.file_stream.write(escaped_data.join(',') + "\n", 'utf-8', error => {
                     if (error) {
                         reject(error);
-                        return;
+                        return false;
                     }
                     resolve(true);
                 });
