@@ -1,0 +1,20 @@
+name: link-checker
+
+services:
+
+  katana:
+    image: projectdiscovery/katana:v1.0.5
+    volumes:
+      - crawl-data:/crawl-data
+
+  analyser:
+    build:
+      context: ./docker/analyser
+      dockerfile: Dockerfile
+  volumes:
+    - crawl-data:/crawl-data
+  depends_on:
+    - katana
+
+volumes:
+  crawl-data:
