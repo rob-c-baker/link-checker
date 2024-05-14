@@ -2,19 +2,17 @@ name: link-checker
 
 services:
 
-  katana:
-    image: projectdiscovery/katana:v1.0.5
+  crawler:
+    build:
+      context: ./.docker/siteone-crawler
+      dockerfile: Dockerfile
     volumes:
-      - crawl-data:/crawl-data
+      - ./tmp:/siteone-crawler/tmp
+      - ./output:/siteone-crawler/output
 
   analyser:
     build:
       context: ./docker/analyser
       dockerfile: Dockerfile
-  volumes:
-    - crawl-data:/crawl-data
-  depends_on:
-    - katana
-
-volumes:
-  crawl-data:
+    volumes:
+      - ./tmp:/tmp/crawl-data
