@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace alanrogers\linkchecker\app\Services;
+namespace rbaker\linkchecker\app\Services;
 
-use alanrogers\linkchecker\app\Exceptions\InvalidFile;
+use rbaker\linkchecker\app\Exceptions\InvalidFile;
 
 class CrawlProcessor
 {

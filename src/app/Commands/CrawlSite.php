@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace alanrogers\linkchecker\app\Commands;
+namespace rbaker\linkchecker\app\Commands;
 
 use alanrogers\linkchecker\app\Exceptions\InvalidURL;
 use alanrogers\linkchecker\app\Services\Sentry;

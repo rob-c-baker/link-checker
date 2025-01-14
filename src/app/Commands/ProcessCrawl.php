@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace alanrogers\linkchecker\app\Commands;
+namespace rbaker\linkchecker\app\Commands;
 
-use alanrogers\linkchecker\app\Exceptions\InvalidFile;
-use alanrogers\linkchecker\app\Services\CrawlProcessor;
-use alanrogers\linkchecker\app\Services\Sentry;
+use rbaker\linkchecker\app\Exceptions\InvalidFile;
+use rbaker\linkchecker\app\Services\CrawlProcessor;
+use rbaker\linkchecker\app\Services\Sentry;
 use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

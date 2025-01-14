@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace alanrogers\linkchecker\app\Exceptions;
+namespace rbaker\linkchecker\app\Exceptions;
 
 use Exception;
 use Symfony\Component\Console\Exception\ExceptionInterface;
