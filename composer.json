@@ -3,19 +3,6 @@
   "description": "Crawl supplied website and reports any broken links.",
   "license": "proprietary",
   "type": "project",
-  "authors": [
-    {
-      "name": "Rob Baker",
-      "email": "rob.baker@alanrogers.com",
-      "role": "Developer"
-    }
-  ],
-  "support": {
-    "email": "developers@alanrogers.com",
-    "issues": "https://gitlab.alanrogers.com/web-dev/worldwide/-/issues",
-    "source": "https://gitlab.alanrogers.com/web-dev/worldwide",
-    "docs": "https://gitlab.alanrogers.com/web-dev/worldwide/-/wikis/home"
-  },
   "require": {
     "php": "^8.3",
     "sentry/sentry": "^4.7",
